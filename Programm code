@@ -1,0 +1,3358 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using MySql.Data.MySqlClient;
+
+namespace Remont
+{
+    public partial class fmZastavka : Form
+    {
+        public fmZastavka()
+        {
+            InitializeComponent();
+        }
+
+        private void fmZastavka_Load(object sender, EventArgs e)
+        {
+            timer1.Start();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            fmUsers frUsers = new fmUsers();
+            timer1.Enabled = false; // когда таймер кончится откроется форма 2 эта спрячется
+            frUsers.Show();
+            this.Hide();
+        }
+    }
+}
+   public partial class fmUsers : Form
+    {
+        public fmUsers()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            fmMeneger frMenegers = new fmMeneger();
+            frMenegers.Show();
+            frMenegers.textBox1.Visible = true;
+            for (int i = 0; i < frMenegers.dataGridView1.RowCount; i++)
+            {
+                for (int j = 0; j < frMenegers.dataGridView1.ColumnCount; j++)
+                    if (frMenegers.dataGridView1.Rows[i].Cells[14].Value != null)
+                        if (frMenegers.dataGridView1.Rows[i].Cells[14].Value.ToString().Contains(frMenegers.textBox1.Text))
+                        {
+                            frMenegers.menuStrip2.Visible = true;
+                            frMenegers.Controls["MenuStrip2"].BackColor = Color.FromName("Red");
+                        }
+                        else
+                        {
+                            frMenegers.menuStrip1.Visible = true;
+                            frMenegers.Controls["MenuStrip1"].BackColor = Color.FromName("Control");
+                        }
+            }
+
+                 for (int i = 0; i < frMenegers.dataGridView2.RowCount; i++)
+                 {
+                    for (int j = 0; j < frMenegers.dataGridView2.ColumnCount; j++)
+                        if (frMenegers.dataGridView2.Rows[i].Cells[1].Value != null)
+                            if (frMenegers.dataGridView2.Rows[i].Cells[1].Value.ToString().Contains(frMenegers.textBox1.Text))
+                            {
+                                frMenegers.menuStrip2.Visible = true;
+                                frMenegers.Controls["MenuStrip2"].BackColor = Color.FromName("Red");
+                            }
+                            else
+                            {
+                                frMenegers.menuStrip1.Visible = true;
+                                frMenegers.Controls["MenuStrip1"].BackColor = Color.FromName("Control");
+                            }
+                 }
+                
+            this.Hide();
+
+}
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            fmAvtorizaciya frAvtorizaciya = new fmAvtorizaciya();
+            frAvtorizaciya.Show();
+            this.Hide();
+        }
+
+        private void выходToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Вы дествительно хотите выйти?", "Выход", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+        }
+
+        private void справкаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Help.ShowHelp(this, "Help.chm");
+        }
+    }
+}
+public fmAvtorizaciya()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if ((textBox1.Text.Equals("")) )
+            {
+                MessageBox.Show("Введите пароль!");
+            }
+            else
+            if (textBox1.Text == "421")
+            {
+                fmAdmin fr5 = new fmAdmin();
+                fr5.Show();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Неверный пароль!");
+            }
+        }
+
+        private void сменаПользователяToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmUsers frUsers = new fmUsers();
+            frUsers.Show();
+            this.Close();
+        }
+    }
+}
+public fmAdmin()
+        {
+            InitializeComponent();
+        }
+        private void сменаПользователяToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmUsers frUsers = new fmUsers();
+            frUsers.Show();
+            this.Close();
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            fmOborudovanie frOborudovanie = new fmOborudovanie();
+            frOborudovanie.Show();
+            this.Close();
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            fmKlients frKlients = new fmKlients();
+            frKlients.Show();
+            frKlients.menuStrip1.Visible = true;
+            this.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            fmSotrudniki frSotrudniki = new fmSotrudniki();
+            frSotrudniki.Show();
+            this.Close();
+        }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            fmUslugi frUslugi = new fmUslugi();
+            frUslugi.Show();
+            this.Close();
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            fmKartridg frKartridg = new fmKartridg();
+            frKartridg.Show();
+            this.Close();
+        }
+    }
+}
+public partial class fmKlients : Form
+    {
+        public fmKlients()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Klients". При необходимости она может быть перемещена или удалена.
+            this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Nasel_punkt". При необходимости она может быть перемещена или удалена.
+            this.nasel_punktTableAdapter.Fill(this.remontDataSet.Nasel_punkt);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Klients". При необходимости она может быть перемещена или удалена.
+            this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int co;
+            co = 0;
+
+            if ((textBox1.Text.Equals("")) || (comboBox1.SelectedValue.Equals("")) || (textBox4.Text.Equals("")) || (textBox5.Text.Equals("")) || (textBox7.Text.Equals("")))
+            {
+                MessageBox.Show("Поле не заполнено!");
+                co = 1;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    if ((Convert.ToString(dataGridView1.Rows[i].Cells[1].Value) == textBox1.Text) && (Convert.ToString(dataGridView1.Rows[i].Cells[2].Value) == textBox4.Text) || (Convert.ToString(dataGridView1.Rows[i].Cells[3].Value) == textBox4.Text) || (Convert.ToString(dataGridView1.Rows[i].Cells[4].Value) == textBox4.Text) || (Convert.ToString(dataGridView1.Rows[i].Cells[5].Value) == textBox4.Text))
+                    {
+                        co = 2;
+                    }
+                }
+            }
+            if (co == 0)
+            {
+                MessageBox.Show("Запись успешно добавлена!");
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = "INSERT INTO `Klients` (`FIO`,`Id_nasel_punkt`,`Adress`,`Pasportniye_dannie`,`Phone`) VALUES ('" + (textBox1.Text + "','" + comboBox1.SelectedValue + "','" + textBox4.Text + "','" + textBox5.Text + "','" + textBox7.Text + "');");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+                textBox1.Clear();
+                textBox7.Clear();
+                textBox5.Clear();
+                textBox4.Clear();
+            }
+            if (co == 2)
+            {
+                MessageBox.Show("Введенная запись уже существует!");
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            fmAdmin fr5 = new fmAdmin();
+            fr5.Show();
+        }
+
+        private void справочникиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmAdmin frAdmin = new fmAdmin();
+            frAdmin.Show();
+            this.Close();
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            MessageBox.Show("Запись успешно отредактирована!");
+            int id_U = Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value);
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = ("UPDATE Klients  SET FIO='" + textBox2.Text + "',Id_nasel_punkt='" + comboBox1.SelectedValue + "',Adress='" + textBox6.Text + "',Pasportniye_dannie='" + textBox3.Text + "',Phone='" + textBox8.Text + "'WHERE Id_klients=" + id_U + "");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите удалить выбранную запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                MessageBox.Show("Запись успешно удалена!");
+                command.CommandText = "DELETE FROM `Klients` WHERE id_klients=" + dataGridView1[0, dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            fmNasel_punkt frNasel_punkt = new fmNasel_punkt();
+            frNasel_punkt.Show();
+            this.Hide();
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l !='.') && (l!=8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l !='.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(1073, 386);
+            button8.Visible = true;
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(1073, 386);
+            button9.Visible = true;
+        }
+
+        private void textBox7_TextChanged(object sender, EventArgs e)
+        {
+            textBox7.MaxLength = 12;
+        }
+
+        private void textBox7_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox8_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox8_TextChanged(object sender, EventArgs e)
+        {
+            textBox8.MaxLength = 12;
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            textBox2.MaxLength = 20;
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            textBox3.MaxLength = 9;
+        }
+
+        private void textBox6_TextChanged(object sender, EventArgs e)
+        {
+            textBox6.MaxLength = 35;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.MaxLength = 20;
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+            textBox5.MaxLength = 9;
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            textBox4.MaxLength = 35;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(750, 386);
+            button8.Visible = false;
+        }
+
+        private void button9_Click_1(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(750, 386);
+            button9.Visible = false;
+        }
+
+        private void button3_Click_2(object sender, EventArgs e)
+        {
+            fmNasel_punkt frNasel_punkt = new fmNasel_punkt();
+            frNasel_punkt.Show();
+            this.Close();
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmZakaz frZakaz = new fmZakaz();
+            frZakaz.Show();
+            this.Close();
+        }
+
+        private void назадToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            fmZakaz_uslug frZakaz_uslug = new fmZakaz_uslug();
+            frZakaz_uslug.Show();
+            this.Close();
+        }
+
+        private void назадToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            fmZakaz_kartridgei frZakaz_kartridgei = new fmZakaz_kartridgei();
+            frZakaz_kartridgei.Show();
+            this.Close();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+        }
+
+        private void button10_Click_1(object sender, EventArgs e)
+        {
+            button11.Visible = true;
+            this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+            int co;
+            co = 0;
+            if ((textBox9.Text.Equals("")))
+            {
+                MessageBox.Show("Не заполнено поле");
+                co = 2;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView1.RowCount; i++)
+                {
+                    for (int j = 0; j < dataGridView1.ColumnCount; j++)
+                        if (dataGridView1.Rows[i].Cells[3].Value != null)
+                            if (dataGridView1.Rows[i].Cells[1].Value.ToString().Contains(textBox9.Text) || (dataGridView1.Rows[i].Cells[3].Value.ToString().Contains(textBox9.Text)))
+                            { co = 1; }
+                            else
+                            {
+                                dataGridView1.CurrentCell = null;
+                                dataGridView1.Rows[i].Visible = false;
+                                break;
+                            }
+                }
+                if (co == 0)
+                {
+                    MessageBox.Show("Совпадений не найдено!");
+                }
+                if (co == 1)
+                {
+                    MessageBox.Show("Поиск завершен!");
+                }
+            }
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            button11.Visible = false;
+            textBox9.Clear();
+            this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+        }
+
+        private void fmKlients_SizeChanged(object sender, EventArgs e)
+        {
+            CenterToScreen();
+        }
+
+        private void добавлениеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(1073, 386);
+            button8.Visible = true;
+        }
+
+        private void comboBox1_TextUpdate(object sender, EventArgs e)
+        {
+            string text = comboBox1.Text;
+            naselpunktBindingSource.Filter = "Name_punkta LIKE '*" + text + "*'";
+            comboBox1.Text = text;
+            comboBox1.SelectionStart = text.Length;
+        }
+
+        private void comboBox2_TextUpdate(object sender, EventArgs e)
+        {
+            string text = comboBox2.Text;
+            naselpunktBindingSource.Filter = "Name_punkta LIKE '*" + text + "*'";
+            comboBox2.Text = text;
+            comboBox2.SelectionStart = text.Length;
+        }
+    }
+}
+public fmNasel_punkt()
+        {
+            InitializeComponent();
+        }
+
+        private void fmNasel_punkt_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Nasel_punkt". При необходимости она может быть перемещена или удалена.
+            this.nasel_punktTableAdapter.Fill(this.remontDataSet.Nasel_punkt);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int co;
+            co = 0;
+
+            if ((textBox1.Text.Equals("")))
+            {
+                MessageBox.Show("Поле не заполнено!");
+                co = 1;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    if (Convert.ToString(dataGridView1.Rows[i].Cells[1].Value) == textBox1.Text)
+                    {
+                        co = 2;
+                    }
+                }
+            }
+            if (co == 0)
+            {
+                MessageBox.Show("Запись успешно добавлена!");
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = "INSERT INTO `Nasel_punkt` (`Name_punkta`) VALUES ('" + (textBox1.Text + "');");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.nasel_punktTableAdapter.Fill(this.remontDataSet.Nasel_punkt);
+                textBox1.Clear();
+                
+            }
+            if (co == 2)
+            {
+                MessageBox.Show("Введенная запись уже существует!");
+                textBox1.Clear();
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Запись успешно отредактирована!");
+            int id_U = Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value);
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = ("UPDATE Nasel_punkt SET Name_punkta='" + textBox2.Text + "'WHERE Id_Nasel_punkt=" + id_U + "");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            this.nasel_punktTableAdapter.Fill(this.remontDataSet.Nasel_punkt);    
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите удалить выбранную запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                MessageBox.Show("Запись успешно удалена!");
+                command.CommandText = "DELETE FROM `Nasel_punkt` WHERE id_nasel_punkt=" + dataGridView1[0, dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.nasel_punktTableAdapter.Fill(this.remontDataSet.Nasel_punkt);
+            }
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmKlients frKlients = new fmKlients();
+            frKlients.Show();
+            this.Close();
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(674, 286);
+            button9.Visible = true;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(674, 286);
+            button6.Visible = true;
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+        private void назадToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            fmKlients frKlients = new fmKlients();
+            frKlients.Show();
+            frKlients.menuStrip1.Visible = true;
+            frKlients.button8.Visible = true;
+            frKlients.Size = new System.Drawing.Size(1073, 386);
+            this.Close();
+        }
+
+        private void button6_Click_1(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(391, 286);
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.MaxLength = 20;
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            textBox2.MaxLength = 20;
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(392, 286);
+            button9.Visible = false;
+        }
+
+        private void button6_Click_2(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(392, 286);
+            button6.Visible = false;
+        }
+
+        private void fmNasel_punkt_SizeChanged(object sender, EventArgs e)
+        {
+            CenterToScreen();
+        }
+    }
+}
+  public fmSotrudniki()
+        {
+            InitializeComponent();
+        }
+
+        private void Form10_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Sotrudniki". При необходимости она может быть перемещена или удалена.
+            this.sotrudnikiTableAdapter.Fill(this.remontDataSet.Sotrudniki);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Sotrudniki". При необходимости она может быть перемещена или удалена.
+            this.sotrudnikiTableAdapter.Fill(this.remontDataSet.Sotrudniki);
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmAdmin frSpravochniki = new fmAdmin();
+            frSpravochniki.Show();
+            this.Close();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите удалить выбранную запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                MessageBox.Show("Запись успешно удалена!");
+                command.CommandText = "DELETE FROM `Sotrudniki` WHERE id_sotrudnik=" + dataGridView1[0, dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.sotrudnikiTableAdapter.Fill(this.remontDataSet.Sotrudniki);
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Запись успешно отредактирована!");
+            int id_U = Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value);
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = ("UPDATE Sotrudniki  SET FIO='" + textBox2.Text + "', Phone='" + textBox3.Text + "'WHERE Id_sotrudnik=" + id_U + "");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            this.sotrudnikiTableAdapter.Fill(this.remontDataSet.Sotrudniki); 
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            int co;
+            co = 0;
+
+            if ((textBox1.Text.Equals("")) || (textBox4.Text.Equals("")))
+            {
+                MessageBox.Show("Поле не заполнено!");
+                co = 1;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    if ((Convert.ToString(dataGridView1.Rows[i].Cells[1].Value) == textBox1.Text) && (Convert.ToString(dataGridView1.Rows[i].Cells[2].Value) == textBox4.Text))
+                    {
+                        co = 2;
+                    }
+                }
+                 }
+                if (co == 0)
+                {
+                    MessageBox.Show("Запись успешно добавлена!");
+                    String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                    MySqlConnection conn = new MySqlConnection(connString);
+                    MySqlCommand command = conn.CreateCommand();
+                    command.CommandText = "INSERT INTO `Sotrudniki` (FIO,Phone) VALUES ('" + (textBox1.Text + "', '" + textBox4.Text + "');");
+                    conn.Open();
+                    command.ExecuteNonQuery();
+                    conn.Close();
+                    this.sotrudnikiTableAdapter.Fill(this.remontDataSet.Sotrudniki);
+                    textBox1.Clear();
+                    textBox4.Clear();
+                }
+                if (co == 2)
+                {
+                    MessageBox.Show("Введенная запись уже существует!");
+                }
+            }
+        
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(692, 289);
+            button5.Visible = true;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(692, 289);
+            button9.Visible = true;
+        }
+
+        private void textBox4_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            textBox3.MaxLength = 12;
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            textBox4.MaxLength = 12;
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            textBox2.MaxLength = 20;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.MaxLength = 20;
+        }
+
+        private void textBox2_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(405, 289);
+            button9.Visible = false;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(405, 289);
+            button5.Visible = false;
+        }
+
+        private void fmSotrudniki_SizeChanged(object sender, EventArgs e)
+        {
+            CenterToScreen();
+        }
+    }
+}
+public partial class fmOborudovanie : Form
+    {
+        public fmOborudovanie()
+        {
+            InitializeComponent();
+        }
+
+        private void справочникиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmAdmin frSpravochniki = new fmAdmin();
+            frSpravochniki.Show();
+            this.Close();
+        }
+
+        private void fmOborudovanie_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Nasel_punkt". При необходимости она может быть перемещена или удалена.
+            this.nasel_punktTableAdapter.Fill(this.remontDataSet.Nasel_punkt);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Oborudovanie". При необходимости она может быть перемещена или удалена.
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Oborudovanie". При необходимости она может быть перемещена или удалена.
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Oborudovanie". При необходимости она может быть перемещена или удалена.
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Oborudovanie". При необходимости она может быть перемещена или удалена.
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Oborudovanie". При необходимости она может быть перемещена или удалена.
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Proizvoditel". При необходимости она может быть перемещена или удалена.
+            this.proizvoditelTableAdapter.Fill(this.remontDataSet.Proizvoditel);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Tip_oborudovaniya". При необходимости она может быть перемещена или удалена.
+            this.tip_oborudovaniyaTableAdapter.Fill(this.remontDataSet.Tip_oborudovaniya);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Oborudovanie". При необходимости она может быть перемещена или удалена.
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if ((comboBox1.SelectedValue.Equals("")) || (comboBox2.SelectedValue.Equals("")) || (textBox4.Text.Equals("")) || (textBox5.Text.Equals("")))
+            {
+                MessageBox.Show("Поле не заполнено!");
+            }
+            else
+            {
+                MessageBox.Show("Запись успешно добавлена!");
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = "INSERT INTO `Oborudovanie` (Id_tip_oborudovaniya,Id_proizvoditel,Cenna,Kolichestvo) VALUES ('" + (comboBox1.SelectedValue + "','" + comboBox2.SelectedValue + "', '" + textBox4.Text + "', '" + textBox5.Text + "');");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();;
+                this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+                textBox4.Clear();
+                textBox5.Clear();
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+           String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите удалить выбранную запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                MessageBox.Show("Запись успешно удалена!");
+                command.CommandText = "DELETE FROM `Oborudovanie` WHERE id_oborudovanie=" + dataGridView1[0, dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+                MessageBox.Show("Запись успешно удалена!");
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Запись успешно отредактирована!");
+            int id_U = Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value);
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = ("UPDATE Oborudovanie  SET Id_tip_oborudovaniya='" + comboBox4.SelectedValue + "',Id_proizvoditel='" + comboBox3.SelectedValue + "',Cenna='" + textBox2.Text + "',Kolichestvo='" + textBox1.Text + "'WHERE Id_oborudovanie=" + id_U + "");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox4_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox5_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(1111, 320);
+            button9.Visible = true;
+            
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(1111, 320);
+            button6.Visible = true;
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            fmProizvoditel frProizvoditel = new fmProizvoditel();
+            frProizvoditel.menuStrip1.Visible = true;
+            frProizvoditel.Show();
+            this.Close();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            fmTip_oborudovaniya frTip_oborudovaniya = new fmTip_oborudovaniya();
+            frTip_oborudovaniya.Show();
+            this.Close();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(741, 320);
+            button9.Visible = false;
+        }
+
+        private void button6_Click_1(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(741, 320);
+            button6.Visible = false;
+        }
+
+        private void comboBox1_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+
+        }
+
+        private void comboBox2_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+
+        }
+
+        private void textBox4_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+
+        }
+
+        private void textBox5_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+
+        }
+
+        private void textBox1_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+
+        }
+
+        private void textBox2_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+
+        }
+
+        private void comboBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox4_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            textBox2.MaxLength = 9;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.MaxLength = 3;
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+            textBox5.MaxLength = 3;
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            textBox4.MaxLength = 9;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            fmTip_oborudovaniya frTip_oborudovaniya = new fmTip_oborudovaniya();
+            frTip_oborudovaniya.Show();
+            this.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            fmProizvoditel frProizvoditel = new fmProizvoditel();
+            frProizvoditel.Show();
+            this.Close();
+        }
+
+        private void fmOborudovanie_SizeChanged(object sender, EventArgs e)
+        {
+            this.CenterToScreen();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            button7.Visible = true;
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+            int co;
+            co = 0;
+            if ((textBox9.Text.Equals("")))
+            {
+                MessageBox.Show("Не заполнено поле");
+                co = 2;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView1.RowCount; i++)
+                {
+                    for (int j = 0; j < dataGridView1.ColumnCount; j++)
+                        if (dataGridView1.Rows[i].Cells[3].Value != null)
+                            if (dataGridView1.Rows[i].Cells[3].Value.ToString().Contains(textBox9.Text) || (dataGridView1.Rows[i].Cells[4].Value.ToString().Contains(textBox9.Text)))
+                            { co = 1; }
+                            else
+                            {
+                                dataGridView1.CurrentCell = null;
+                                dataGridView1.Rows[i].Visible = false;
+                                break;
+                            }
+                }
+                if (co == 0)
+                {
+                    MessageBox.Show("Совпадений не найдено!");
+                }
+                if (co == 1)
+                {
+                    MessageBox.Show("Поиск завершен!");
+                }
+            }
+        }
+
+        private void button7_Click_1(object sender, EventArgs e)
+        {
+            button7.Visible = false;
+            textBox9.Clear();
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+        }
+    }
+}
+public fmTip_oborudovaniya()
+        {
+            InitializeComponent();
+        }
+
+        private void отменаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmOborudovanie frOborudovanie = new fmOborudovanie();
+            frOborudovanie.Show();
+            frOborudovanie.button9.Visible = true;
+            frOborudovanie.Size = new System.Drawing.Size(1111, 320);
+            this.Close();
+        }
+
+        private void fmTip_oborudovaniya_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Tip_oborudovaniya". При необходимости она может быть перемещена или удалена.
+            this.tip_oborudovaniyaTableAdapter.Fill(this.remontDataSet.Tip_oborudovaniya);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            int co;
+            co = 0;
+
+            if ((textBox1.Text.Equals("")))
+            {
+                MessageBox.Show("Поле не заполнено!");
+                co = 1;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView2.Rows.Count; i++)
+                {
+                    if ((Convert.ToString(dataGridView2.Rows[i].Cells[1].Value) == textBox1.Text))
+                    {
+                        co = 2;
+                    }
+                }
+            }
+            if (co == 0)
+            {
+                MessageBox.Show("Запись успшно добавлена!");
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = "INSERT INTO `Tip_oborudovaniya` (Name_oborudovaniya) VALUES ('" + (textBox1.Text + "');");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.tip_oborudovaniyaTableAdapter.Fill(this.remontDataSet.Tip_oborudovaniya);
+                textBox1.Clear();
+            }
+            if (co == 2)
+            {
+                MessageBox.Show("Введенная запись уже существует!");
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Запись успешно отредактирована!");
+            int id_U = Convert.ToInt32(this.dataGridView2.CurrentRow.Cells[0].Value);
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = ("UPDATE Tip_oborudovaniya  SET Name_oborudovaniya='" + textBox2.Text + "'WHERE Id_tip_oborudovaniya=" + id_U + "");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            this.tip_oborudovaniyaTableAdapter.Fill(this.remontDataSet.Tip_oborudovaniya);
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите удалить выбранную запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                MessageBox.Show("Запись успешно удалена!");
+                command.CommandText = "DELETE FROM `Tip_oborudovaniya` WHERE id_tip_oborudovaniya=" + dataGridView2[0, dataGridView2.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.tip_oborudovaniyaTableAdapter.Fill(this.remontDataSet.Tip_oborudovaniya);
+                MessageBox.Show("Запись успешно удалена!");
+            }
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            textBox2.MaxLength = 20;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.MaxLength = 20;
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(654, 284);
+            button8.Visible = true;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(654, 284);
+            button9.Visible = true;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(389, 284);
+            button8.Visible = false;
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(389, 284);
+            button9.Visible = false;
+        }
+
+        private void fmTip_oborudovaniya_SizeChanged(object sender, EventArgs e)
+        {
+            this.CenterToScreen();
+        }
+    }
+}
+  public fmProizvoditel()
+        {
+            InitializeComponent();
+        }
+
+        private void fmProizvoditel_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Proizvoditel". При необходимости она может быть перемещена или удалена.
+            this.proizvoditelTableAdapter.Fill(this.remontDataSet.Proizvoditel);
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmOborudovanie frOborudovanie = new fmOborudovanie();
+            frOborudovanie.Show();
+            frOborudovanie.button9.Visible = true;
+            frOborudovanie.Size = new System.Drawing.Size(1111, 320);
+            this.Close();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            int co;
+            co = 0;
+
+            if ((textBox2.Text.Equals("")))
+            {
+                MessageBox.Show("Поле не заполнено!");
+                co = 1;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView3.Rows.Count; i++)
+                {
+                    if ((Convert.ToString(dataGridView3.Rows[i].Cells[1].Value) == textBox2.Text))
+                    {
+                        co = 2;
+                    }
+                }
+            }
+            if (co == 0)
+            {
+                MessageBox.Show("Запись успешно добавлена!");
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = "INSERT INTO `Proizvoditel` (Name_proizvoditelya) VALUES ('" + (textBox2.Text + "');");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.proizvoditelTableAdapter.Fill(this.remontDataSet.Proizvoditel);
+                textBox2.Clear();
+            }
+            if (co == 2)
+            {
+                MessageBox.Show("Введенная запись уже существует!");
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Запись успешно отредактирована!");
+            int id_U = Convert.ToInt32(this.dataGridView3.CurrentRow.Cells[0].Value);
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = ("UPDATE Proizvoditel  SET Name_proizvoditelya='" + textBox1.Text + "'WHERE Id_proizvoditel=" + id_U + "");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            this.proizvoditelTableAdapter.Fill(this.remontDataSet.Proizvoditel);
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите удалить выбранную запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                MessageBox.Show("Запись успешно удалена!");
+                command.CommandText = "DELETE FROM `Proizvoditel` WHERE id_proizvoditel=" + dataGridView3[0,dataGridView3.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                MessageBox.Show("Запись успешно удалена!");
+                this.proizvoditelTableAdapter.Fill(this.remontDataSet.Proizvoditel);
+            }
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            textBox2.MaxLength = 20;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.MaxLength = 20;
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        internal void отменаToolStripMenuItem_Click()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void отменаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(655, 283);
+            button3.Visible = true;
+            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(655, 283);
+            button4.Visible = true;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(392, 283);
+            button3.Visible = false; 
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(392, 283);
+            button4.Visible = false; 
+        }
+
+        private void назадToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            fmKartridg frKartridg = new fmKartridg();
+            frKartridg.Show();
+            frKartridg.button12.Visible = true;
+            frKartridg.Size = new System.Drawing.Size(783, 318);
+            this.Close();
+        }
+
+        private void fmProizvoditel_SizeChanged(object sender, EventArgs e)
+        {
+            this.CenterToScreen();
+        }
+    }
+}
+public partial class fmKartridg : Form
+    {
+        public fmKartridg()
+        {
+            InitializeComponent();
+        }
+
+        private void справочникиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmAdmin frSpravochniki = new fmAdmin();
+            frSpravochniki.Show();
+            this.Close();
+        }
+
+        private void fmKartridg_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Proizvoditel". При необходимости она может быть перемещена или удалена.
+            this.proizvoditelTableAdapter.Fill(this.remontDataSet.Proizvoditel);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Tip_printera". При необходимости она может быть перемещена или удалена.
+            this.tip_printeraTableAdapter.Fill(this.remontDataSet.Tip_printera);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Kartridg". При необходимости она может быть перемещена или удалена.
+            this.kartridgTableAdapter.Kartridg(this.remontDataSet.Kartridg);
+        }
+    
+    
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if ((comboBox1.SelectedValue.Equals("")) || (comboBox2.SelectedValue.Equals("")) || (textBox3.Text.Equals("")))
+            {
+                MessageBox.Show("Заполните все поля!");
+            }
+            else
+            {
+                MessageBox.Show("Запись успешно добавлена!");
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = "INSERT INTO `Kartridg` (Id_tip_printera,Id_proizvoditel,Cenna_zapravki) VALUES ('" + (comboBox1.SelectedValue + "','" + comboBox2.SelectedValue + "', '" + textBox3.Text + "');");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.kartridgTableAdapter.Kartridg(this.remontDataSet.Kartridg);
+                textBox3.Clear();
+            }
+        }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Запись успешно отредактирована!");
+            int id_U = Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value);
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = ("UPDATE Kartridg  SET Id_tip_printera='" + comboBox1.SelectedValue + "',Id_proizvoditel='" + comboBox2.SelectedValue + "'WHERE Id_kartridg=" + id_U + "");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            this.kartridgTableAdapter.Kartridg(this.remontDataSet.Kartridg);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите удалить выбранную запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                MessageBox.Show("Запись успешно удалена!");
+                command.CommandText = "DELETE FROM `Kartridg` WHERE id_kartridg=" + dataGridView1[0, dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.kartridgTableAdapter.Kartridg(this.remontDataSet.Kartridg);
+            }
+        }
+
+        private void comboBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button7_Click_2(object sender, EventArgs e)
+        {
+            fmProizvoditel frProizvoditel = new fmProizvoditel();
+            frProizvoditel.menuStrip2.Visible = true;
+            frProizvoditel.Show();
+            this.Close();
+        }
+
+        private void button9_Click_1(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(783, 318);
+            button12.Visible = true;
+        }
+
+        private void button6_Click_2(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(783, 318);
+            button13.Visible = true;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            fmTip_printera frTip_printera = new fmTip_printera();
+            frTip_printera.Show();
+            this.Close();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(442, 318);
+            button12.Visible = false;
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(442, 318);
+            button13.Visible = false;
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            textBox3.MaxLength = 6;
+        }
+
+        private void comboBox4_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.MaxLength = 6;
+        }
+
+        private void textBox1_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            fmTip_printera frTip_printera = new fmTip_printera();
+            frTip_printera.Show();
+            this.Close();
+        }
+
+        private void fmKartridg_SizeChanged(object sender, EventArgs e)
+        {
+            this.CenterToScreen();
+        }
+    }
+}
+public partial class fmTip_printera : Form
+    {
+        public fmTip_printera()
+        {
+            InitializeComponent();
+        }
+
+        private void fmTip_printera_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Tip_printera". При необходимости она может быть перемещена или удалена.
+            this.tip_printeraTableAdapter.Fill(this.remontDataSet.Tip_printera);
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmKartridg frKartridg = new fmKartridg();
+            frKartridg.Show();
+            frKartridg.button12.Visible = true;
+            frKartridg.Size = new System.Drawing.Size(783, 318);
+            this.Close();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int co;
+            co = 0;
+
+            if ((textBox1.Text.Equals("")))
+            {
+                MessageBox.Show("Поле не заполнено!");
+                co = 1;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView2.Rows.Count; i++)
+                {
+                    if ((Convert.ToString(dataGridView2.Rows[i].Cells[1].Value) == textBox1.Text))
+                    {
+                        co = 2;
+                    }
+                }
+            }
+            if (co == 0)
+            {
+                MessageBox.Show("Запись успешно добавлена!");
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = "INSERT INTO `Tip_printera` (Name_printera) VALUES ('" + (textBox1.Text + "');");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.tip_printeraTableAdapter.Fill(this.remontDataSet.Tip_printera);
+                textBox1.Clear();
+                
+            }
+            if (co == 2)
+            {
+                MessageBox.Show("Введенная запись уже существует!");
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите удалить выбранную запись?", "Удаление",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                MessageBox.Show("Запись успешно удалена!");
+                command.CommandText = "DELETE FROM `Tip_printera` WHERE id_tip_printera=" + dataGridView2[0,dataGridView2.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.tip_printeraTableAdapter.Fill(this.remontDataSet.Tip_printera);
+                MessageBox.Show("Запись успешно удалена!");
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Запись успешно отредактирована!");
+            int id_U = Convert.ToInt32(this.dataGridView2.CurrentRow.Cells[0].Value);
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = ("UPDATE Tip_printera  SET Name_printera='" + textBox2.Text + "'WHERE Id_tip_printera=" + id_U + "");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            this.tip_printeraTableAdapter.Fill(this.remontDataSet.Tip_printera);
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            textBox2.MaxLength = 20;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.MaxLength = 20;
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(659, 282);
+            button8.Visible = true;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(659, 282);
+            button5.Visible = true;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(392, 282);
+            button5.Visible = false;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(392, 282);
+            button8.Visible = false;
+        }
+
+        private void fmTip_printera_SizeChanged(object sender, EventArgs e)
+        {
+            this.CenterToScreen();
+        }
+    }
+}
+public partial class fmUslugi : Form
+    {
+        public fmUslugi()
+        {
+            InitializeComponent();
+        }
+
+        private void справочникиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmAdmin frSpravochniki = new fmAdmin();
+            frSpravochniki.Show();
+            this.Close();
+        }
+
+        private void fmUslugi_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Tip_uslugi". При необходимости она может быть перемещена или удалена.
+            this.tip_uslugiTableAdapter.Fill(this.remontDataSet.Tip_uslugi);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Tip_uslugi". При необходимости она может быть перемещена или удалена.
+            this.tip_uslugiTableAdapter.Fill(this.remontDataSet.Tip_uslugi);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Tip_uslugi". При необходимости она может быть перемещена или удалена.
+            this.tip_uslugiTableAdapter.Fill(this.remontDataSet.Tip_uslugi);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Uslugi". При необходимости она может быть перемещена или удалена.
+            this.uslugiTableAdapter.Uslugi(this.remontDataSet.Uslugi);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            groupBox1.Visible = true;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            groupBox1.Visible = true;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите удалить выбранную запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                MessageBox.Show("Запись успешно удалена!");
+                command.CommandText = "DELETE FROM `Uslugi` WHERE id_uslugi=" + dataGridView1[0, dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.uslugiTableAdapter.Uslugi(this.remontDataSet.Uslugi);
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Запись успешно отредактирована!");
+            int id_U = Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value);
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = ("UPDATE Uslugi  SET Id_tip_uslugi='" + comboBox2.SelectedValue + "',Cenna='" + textBox1.Text + "'WHERE Id_uslugi=" + id_U + "");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            MessageBox.Show("Выбранная запись успешно отредактирована!");
+            this.uslugiTableAdapter.Uslugi(this.remontDataSet.Uslugi);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if ((comboBox1.SelectedValue.Equals("")) && (textBox2.Text.Equals("")))
+            {
+                MessageBox.Show("Поле не заполнено!"); 
+            }
+            else
+            {
+                MessageBox.Show("Запись успешно добавлена!");
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = "INSERT INTO `Uslugi` (Id_tip_uslugi,Cenna) VALUES ('" + (comboBox1.SelectedValue + "', '" + textBox2.Text + "');");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.uslugiTableAdapter.Uslugi(this.remontDataSet.Uslugi);
+                textBox2.Clear();
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            fmKartridg_vitrina frTip_uslugi = new fmKartridg_vitrina();
+            frTip_uslugi.Show();
+            this.Close();
+        }
+
+        private void comboBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            fmTip_uslugi frTip_uslugi = new fmTip_uslugi();
+            frTip_uslugi.Show();
+            this.Close();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(783, 271);
+            button2.Visible = true;
+        }
+
+        private void button6_Click_1(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(783, 271);
+            button7.Visible = true;
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(485, 271);
+            button2.Visible = false;
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(485, 271);
+            button7.Visible = false;
+        }
+
+        private void textBox2_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox1_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            textBox2.MaxLength = 7;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.MaxLength = 7;
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            fmTip_uslugi frTip_uslugi = new fmTip_uslugi();
+            frTip_uslugi.Show();
+            this.Close();
+        }
+
+        private void fmUslugi_SizeChanged(object sender, EventArgs e)
+        {
+            this.CenterToScreen();
+        }
+    }
+}
+public partial class fmTip_uslugi : Form
+    {
+        public fmTip_uslugi()
+        {
+            InitializeComponent();
+        }
+
+        private void fmTip_uslugi_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Tip_uslugi". При необходимости она может быть перемещена или удалена.
+            this.tip_uslugiTableAdapter.Fill(this.remontDataSet.Tip_uslugi);
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmUslugi frUslugi = new fmUslugi();
+            frUslugi.Show();
+            frUslugi.button2.Visible = true;
+            frUslugi.Size = new System.Drawing.Size(783, 271);
+            this.Close();
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            textBox3.MaxLength = 20;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.MaxLength = 20;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите удалить выбранную запись?", "Удаление",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                MessageBox.Show("Запись успешно удалена!");
+                command.CommandText = "DELETE FROM `Tip_uslugi` WHERE id_tip_uslugi=" + dataGridView2[0,dataGridView2.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.tip_uslugiTableAdapter.Fill(this.remontDataSet.Tip_uslugi);
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Запись успешно отредактирована!");
+            int id_U = Convert.ToInt32(this.dataGridView2.CurrentRow.Cells[0].Value);
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = ("UPDATE Tip_uslugi  SET Name_uslugi='" + textBox3.Text + "'WHERE Id_tip_uslugi=" + id_U + "");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            this.tip_uslugiTableAdapter.Fill(this.remontDataSet.Tip_uslugi);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int co;
+            co = 0;
+
+            if ((textBox1.Text.Equals("")))
+            {
+                MessageBox.Show("Поле не заполнено!");
+                co = 1;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView2.Rows.Count; i++)
+                {
+                    if ((Convert.ToString(dataGridView2.Rows[i].Cells[1].Value) == textBox1.Text))
+                    {
+                        co = 2;
+                    }
+                }
+            }
+            if (co == 0)
+            {
+                MessageBox.Show("Запись успешно добавлена!");
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = "INSERT INTO `Tip_uslugi` (Name_uslugi) VALUES ('" + (textBox1.Text + "');");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.tip_uslugiTableAdapter.Fill(this.remontDataSet.Tip_uslugi);
+                textBox1.Clear();
+            }
+            if (co == 2)
+            {
+                MessageBox.Show("Введенная запись уже существует!");
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(656, 292);
+            button9.Visible = true;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(656, 292);
+            button5.Visible = true;
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(392, 292);
+            button9.Visible = false;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(392, 292);
+            button5.Visible = false;
+        }
+
+        private void fmTip_uslugi_SizeChanged(object sender, EventArgs e)
+        {
+            this.CenterToScreen();
+        }
+    }
+}
+public partial class fmMeneger : Form
+    {
+        public fmMeneger()
+        {
+            InitializeComponent();
+        }
+
+        private void fmMenegers_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina_zapravki". При необходимости она может быть перемещена или удалена.
+            this.korzina_zapravkiTableAdapter.Zakaz_zapravki(this.remontDataSet.Korzina_zapravki);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina_uslugi". При необходимости она может быть перемещена или удалена.
+            this.korzina_uslugiTableAdapter.Zakaz_uslug(this.remontDataSet.Korzina_uslugi);
+        }
+
+        private void textBox1_VisibleChanged(object sender, EventArgs e)
+        {
+            textBox1.Text = DateTime.Now.ToShortDateString();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            fmVitrina frVitrina = new fmVitrina();
+            frVitrina.Show();
+            this.Close();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            fmOkazanie_uslug frOkazanie_uslug = new fmOkazanie_uslug();
+            frOkazanie_uslug.Show();
+            this.Close();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            fmKartridg_vitrina frKartridg_vitrina = new fmKartridg_vitrina();
+            frKartridg_vitrina.Show();
+            this.Close();
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmUsers frUsers = new fmUsers();
+            frUsers.Show();
+            this.Close();
+        }
+
+        private void новыйЗаказToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmNapominalka frNapominalka = new fmNapominalka();
+            frNapominalka.Show();
+            int co;
+            co = 0;
+            for (int i = 0; i < frNapominalka.dataGridView1.RowCount; i++)
+            {
+                for (int j = 0; j < frNapominalka.dataGridView1.ColumnCount; j++)
+                    if (frNapominalka.dataGridView1.Rows[i].Cells[1].Value != null)
+                        if (frNapominalka.dataGridView1.Rows[i].Cells[1].Value.ToString().Contains(frNapominalka.textBox1.Text))
+                        {
+                            co = 1;
+                        }
+                        else
+                        {
+                            frNapominalka.dataGridView1.CurrentCell = null;
+                            break;
+                        }
+                if (co == 1)
+                {
+                    frNapominalka.Controls["button1"].BackColor = Color.FromName("Red");
+                }
+                if (co == 0)
+                {
+                    frNapominalka.Controls["button1"].BackColor = Color.FromName("Control");
+                }
+                this.Hide();
+            }
+
+            for (int i = 0; i < frNapominalka.dataGridView2.RowCount; i++)
+            {
+                for (int j = 0; j < frNapominalka.dataGridView2.ColumnCount; j++)
+                    if (frNapominalka.dataGridView2.Rows[i].Cells[1].Value != null)
+                        if (frNapominalka.dataGridView2.Rows[i].Cells[1].Value.ToString().Contains(frNapominalka.textBox1.Text))
+                        {
+                            co = 2;
+                        }
+                        else
+                        {
+                            frNapominalka.dataGridView2.CurrentCell = null;
+                            break;
+                        }
+                if (co == 2)
+                {
+                    frNapominalka.Controls["button2"].BackColor = Color.FromName("Red");
+                }
+                if (co == 3)
+                {
+                    frNapominalka.Controls["button2"].BackColor = Color.FromName("Control");
+                }
+            }
+        }
+    }
+}
+public partial class fmVitrina : Form
+    {
+        public fmVitrina()
+        {
+            InitializeComponent();
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmMeneger frMeneger = new fmMeneger();
+            frMeneger.Show();
+            this.Close();
+        }
+
+        private void fmVitrina_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina". При необходимости она может быть перемещена или удалена.
+            this.korzinaTableAdapter.Korzina(this.remontDataSet.Korzina);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Oborudovanie". При необходимости она может быть перемещена или удалена.
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            fmZakaz frZakaz = new fmZakaz();
+            frZakaz.Show();
+            this.Close();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            button6.Visible = true;
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+            int co;
+            co = 0;
+            if ((textBox1.Text.Equals("")))
+            {
+                MessageBox.Show("Не заполнено поле");
+                co = 2;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView1.RowCount; i++)
+                {
+                    for (int j = 0; j < dataGridView1.ColumnCount; j++)
+                        if (dataGridView1.Rows[i].Cells[3].Value != null)
+                            if (dataGridView1.Rows[i].Cells[3].Value.ToString().Contains(textBox1.Text) || (dataGridView1.Rows[i].Cells[4].Value.ToString().Contains(textBox1.Text) || (dataGridView1.Rows[i].Cells[5].Value.ToString().Contains(textBox1.Text) || (dataGridView1.Rows[i].Cells[6].Value.ToString().Contains(textBox1.Text)))))
+                            { co = 1; }
+                            else
+                            {
+                                dataGridView1.CurrentCell = null;
+                                dataGridView1.Rows[i].Visible = false;
+                                break;
+                            }
+                }
+                if (co==0)
+                {
+                    MessageBox.Show("Совпадений не найдено!"); 
+                }
+                if (co==1)
+                {
+                    MessageBox.Show("Поиск завершен!");
+                }
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            button6.Visible = false;
+            textBox1.Clear();
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+        }
+    }
+}
+public partial class fmZakaz : Form
+    {
+        public fmZakaz()
+        {
+            InitializeComponent();
+        }
+
+        private void fmZakaz_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Oborudovanie". При необходимости она может быть перемещена или удалена.
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Oborudovanie". При необходимости она может быть перемещена или удалена.
+            this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Klients". При необходимости она может быть перемещена или удалена.
+            this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (numericUpDown1.Text == "0")
+            {
+                MessageBox.Show("Выберите количество!");
+            }
+            else
+            {
+                int a = Convert.ToInt32(numericUpDown1.Text);
+                int b = Convert.ToInt32(textBox5.Text);
+                if (a > b)
+                {
+                    MessageBox.Show("Остаток на складе " + b);
+                }
+                else
+                {
+                    {
+                        double resultat = Convert.ToInt32(textBox5.Text) - Convert.ToInt32(numericUpDown1.Text);
+                        textBox5.Text = resultat.ToString();
+                    }
+
+                    {
+                        MessageBox.Show("Заказ успешно добавлен!");
+                        String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                        MySqlConnection conn = new MySqlConnection(connString);
+                        MySqlCommand command = conn.CreateCommand();
+                        command.CommandText = "INSERT INTO `Korzina` (Id_klients, Id_oborudovanie,kolichestvo) VALUES ('" + (comboBox1.SelectedValue + "', '" + comboBox2.SelectedValue + "','" + numericUpDown1.Text + "');");
+                        conn.Open();
+                        command.ExecuteNonQuery();
+                        conn.Close();
+                        this.korzinaTableAdapter.Korzina(this.remontDataSet.Korzina);
+                    }
+
+                    {
+                        int id_U = Convert.ToInt32(this.dataGridView2.CurrentRow.Cells[0].Value);
+                        String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                        MySqlConnection conn = new MySqlConnection(connString);
+                        MySqlCommand command = conn.CreateCommand();
+                        command.CommandText = ("UPDATE Oborudovanie  SET kolichestvo='" + textBox5.Text + "'WHERE Id_oborudovanie=" + id_U + "");
+                        conn.Open();
+                        command.ExecuteNonQuery();
+                        conn.Close();
+                        this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+                    }
+
+                    {
+                        double resultat = Convert.ToInt32(textBox1.Text) * Convert.ToInt32(textBox2.Text);
+                        textBox3.Text = resultat.ToString();
+                    }
+
+                    {
+                        int id_U = Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value);
+                        String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                        MySqlConnection conn = new MySqlConnection(connString);
+                        MySqlCommand command = conn.CreateCommand();
+                        command.CommandText = ("UPDATE Korzina  SET Obshaya_summa='" + textBox3.Text + "'WHERE Id_korzina=" + id_U + "");
+                        conn.Open();
+                        command.ExecuteNonQuery();
+                        conn.Close();
+                        this.korzinaTableAdapter.Korzina(this.remontDataSet.Korzina);
+                    }
+                }
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            {
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                DialogResult result = MessageBox.Show("Вы дествительно хотите убрать заказ?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    command.CommandText = "DELETE FROM `Korzina` WHERE id_korzina=" + dataGridView1[0, dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+                    conn.Open();
+                    command.ExecuteNonQuery();
+                    conn.Close();
+                    this.korzinaTableAdapter.Korzina(this.remontDataSet.Korzina);
+                }
+            }
+            {
+                double resultat = Convert.ToInt32(textBox5.Text) + Convert.ToInt32(numericUpDown1.Text);
+                textBox6.Text = resultat.ToString();
+            }
+            {
+                int id_U = Convert.ToInt32(this.dataGridView2.CurrentRow.Cells[0].Value);
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = ("UPDATE Oborudovanie  SET kolichestvo='" + textBox6.Text + "'WHERE Id_oborudovanie=" + id_U + "");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.oborudovanieTableAdapter.Oborudovanie(this.remontDataSet.Oborudovanie);
+            }
+        }
+
+        private void витринаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmVitrina frVitrina = new fmVitrina();
+            frVitrina.Show();
+            this.Close();
+        }
+
+        private void comboBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void numericUpDown1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            oborudovanieBindingSource.MoveNext();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            oborudovanieBindingSource.MovePrevious();
+        }
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            {
+                double resultat = Convert.ToInt32(textBox1.Text) * Convert.ToInt32(textBox2.Text);
+                textBox3.Text = resultat.ToString();
+            }
+            {
+                int id_U = Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value);
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = ("UPDATE Korzina  SET Obshaya_summa='" + textBox3.Text + "'WHERE Id_korzina=" + id_U + "");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.korzinaTableAdapter.Korzina(this.remontDataSet.Korzina);
+            }
+        }
+
+        private void button4_Click_2(object sender, EventArgs e)
+        {
+            fmKlients frKlients = new fmKlients();
+            frKlients.menuStrip2.Visible = true;
+            frKlients.Show();
+            this.Hide();
+        }
+
+        private void comboBox1_TextUpdate(object sender, EventArgs e)
+        {
+            string text = comboBox1.Text;
+            klientsBindingSource.Filter = "FIO LIKE '*" + text + "*'";
+            comboBox1.Text = text;
+            comboBox1.SelectionStart = text.Length;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+              Microsoft.Office.Interop.Excel.Application Exl = new Microsoft.Office.Interop.Excel.Application();
+              Microsoft.Office.Interop.Excel.Workbook wb;
+
+              XlReferenceStyle RefStyle = Exl.ReferenceStyle;
+              Exl.Visible = true;
+              string TempluteFileName = @"C:\Users\Дмитрий\Desktop\Диплом\Remont\test.xltx";
+              try
+              {
+                  wb = Exl.Workbooks.Add(TempluteFileName);
+              }
+              catch (System.Exception ex)
+              {
+                  throw new Exception("Не удалось загрузить шаблон для экспорта " + TempluteFileName + "\n" + ex.Message);
+              }
+              Worksheet ws = wb.Worksheets.get_Item(1) as Worksheet;
+              for (int j = 0; j < dataGridView1.Columns.Count; ++j)
+              {
+                 // (ws.Cells[1, j + 2] as Range).Value2 = dataGridView1.Columns[j].HeaderText;
+                  for (int i = 0; i < dataGridView1.Rows.Count; ++i)
+                  {
+                      object Val = dataGridView1.Rows[i].Cells[j].Value;
+                      if (Val != null)
+                          (ws.Cells[i + 2, j + 1] as Range).Value2 = Val.ToString();
+                  }
+              }
+              ws.Columns.EntireColumn.AutoFit();
+              Exl.ReferenceStyle = RefStyle;
+        }
+    }
+}
+public partial class fmKartridg_vitrina : Form
+    {
+        public fmKartridg_vitrina()
+        {
+            InitializeComponent();
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmMeneger frMeneger = new fmMeneger();
+            frMeneger.Show();
+            int co;
+            co = 0;
+            for (int i = 0; i < frMeneger.dataGridView2.RowCount; i++)
+            {
+                for (int j = 0; j < frMeneger.dataGridView2.ColumnCount; j++)
+                    if (frMeneger.dataGridView2.Rows[i].Cells[1].Value != null)
+                        if (frMeneger.dataGridView2.Rows[i].Cells[1].Value.ToString().Contains(frMeneger.textBox1.Text))
+                        {
+                            co = 1;
+                        }
+                        else
+                        {
+                            frMeneger.dataGridView2.CurrentCell = null;
+                            break;
+                        }
+                if (co == 1)
+                {
+                    frMeneger.menuStrip2.Visible = true;
+                    frMeneger.Controls["MenuStrip2"].BackColor = Color.FromName("Red");
+                }
+                if (co == 0)
+                {
+                    frMeneger.menuStrip1.Visible = true;
+                    frMeneger.Controls["MenuStrip1"].BackColor = Color.FromName("Control");
+                }
+                this.Close();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            fmZakaz_kartridgei frZapravka_kartridgei = new fmZakaz_kartridgei();
+            frZapravka_kartridgei.Show();
+            this.Close();
+        }
+
+        private void fmZapravka_kartridgei_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet1.Kartridg". При необходимости она может быть перемещена или удалена.
+            this.kartridgTableAdapter.Kartridg(this.remontDataSet1.Kartridg);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Kartridg". При необходимости она может быть перемещена или удалена.
+            this.kartridgTableAdapter.Kartridg(this.remontDataSet.Kartridg);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            DataView myDataView = new DataView(this.remontDataSet.Kartridg);
+            myDataView.Sort = "Name_printera  ASC";
+            dataGridView1.DataSource = myDataView;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            button6.Visible = true;
+            this.kartridgTableAdapter.Kartridg(this.remontDataSet.Kartridg);
+            int co;
+            co = 0;
+            if ((textBox1.Text.Equals("")))
+            {
+                MessageBox.Show("Не заполнено поле");
+                co = 2;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView1.RowCount; i++)
+                {
+                    for (int j = 0; j < dataGridView1.ColumnCount; j++)
+                        if (dataGridView1.Rows[i].Cells[3].Value != null)
+                            if (dataGridView1.Rows[i].Cells[3].Value.ToString().Contains(textBox1.Text) || (dataGridView1.Rows[i].Cells[4].Value.ToString().Contains(textBox1.Text) || (dataGridView1.Rows[i].Cells[5].Value.ToString().Contains(textBox1.Text))))
+                            { co = 1; }
+                            else
+                            {
+                                dataGridView1.CurrentCell = null;
+                                dataGridView1.Rows[i].Visible = false;
+                                break;
+                            }
+                }
+                if (co == 0)
+                {
+                    MessageBox.Show("Совпадений не найдено!");
+                }
+                if (co == 1)
+                {
+                    MessageBox.Show("Поиск завершен!");
+                }
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            button6.Visible = false;
+            textBox1.Clear();
+            this.kartridgTableAdapter.Kartridg(this.remontDataSet.Kartridg);
+        }
+    }
+}
+public partial class fmZakaz_kartridgei : Form
+    {
+        string TempluteFileName = @"C:\Users\Дмитрий\Desktop\Диплом\Remont\kartridg.dotx";
+        public fmZakaz_kartridgei()
+        {
+            InitializeComponent();
+        }
+
+        private void fmZapravka_kartridgei_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Sotrudniki". При необходимости она может быть перемещена или удалена.
+            this.sotrudnikiTableAdapter.Fill(this.remontDataSet.Sotrudniki);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Kartridg". При необходимости она может быть перемещена или удалена.
+            this.kartridgTableAdapter.Kartridg(this.remontDataSet.Kartridg);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Klients". При необходимости она может быть перемещена или удалена.
+            this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina_zapravki". При необходимости она может быть перемещена или удалена.
+            this.korzina_zapravkiTableAdapter.Zakaz_zapravki(this.remontDataSet.Korzina_zapravki);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina_zapravki". При необходимости она может быть перемещена или удалена.
+            this.korzina_zapravkiTableAdapter.Zakaz_zapravki(this.remontDataSet.Korzina_zapravki);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var Id_zakaza = textBox4.Text;
+            var signdate = dateTimePicker1.Value.ToShortDateString();
+            var name = textBox5.Text;
+            var adress = textBox6.Text;
+            var phone = textBox7.Text;
+            var kartridg = textBox8.Text;
+            var proizvoditel = textBox9.Text;
+
+             //TODO: Word Export
+
+             var wordApp = new Word.Application();
+             wordApp.Visible = false;
+
+            try
+            {
+                var wordDocument = wordApp.Documents.Open(TempluteFileName);
+                ReplaceWordStub("{Id_zakaza}", Id_zakaza, wordDocument);
+                ReplaceWordStub("{name}", name, wordDocument);
+                ReplaceWordStub("{adress}", adress, wordDocument);
+                ReplaceWordStub("{phone}", phone, wordDocument);
+                ReplaceWordStub("{kartridg}", kartridg, wordDocument);
+                ReplaceWordStub("{proizvoditel}", proizvoditel, wordDocument);
+                ReplaceWordStub("{signdate}", signdate, wordDocument);
+
+                wordDocument.SaveAs(@"C:\Users\Дмитрий\Desktop\Диплом\Remont\result1.dotx");
+                wordApp.Visible = true;
+           }
+             catch
+            {
+                 MessageBox.Show("Не удалось загрузить шаблон!");
+            } 
+        }
+
+        private void ReplaceWordStub(string stubToReplace, string text, Word.Document wordDocument)
+        {
+            var range = wordDocument.Content;
+            range.Find.ClearFormatting();
+            range.Find.Execute(FindText: stubToReplace, ReplaceWith: text);
+        }
+
+        private void картриджToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmKartridg_vitrina frKartridg_vitrina = new fmKartridg_vitrina();
+            frKartridg_vitrina.Show();
+            this.Close(); 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int co;
+            co = 0;
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                if ((Convert.ToString(dataGridView1.Rows[i].Cells[8].Value) == comboBox1.Text) && (Convert.ToString(dataGridView1.Rows[i].Cells[9].Value) == comboBox3.Text))
+                {
+                    co = 2;
+                }
+            }
+            if (co == 0)
+            {
+                MessageBox.Show("Заказ успешно добавлен!");
+                String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+                MySqlConnection conn = new MySqlConnection(connString);
+                MySqlCommand command = conn.CreateCommand();
+                command.CommandText = "INSERT INTO `Korzina_zapravki` (Id_klients,Id_kartridg,kolichestvo,Id_sotrudnik,Date,Date_sdachi) VALUES ('" + (comboBox1.SelectedValue + "','" + comboBox2.SelectedValue + "','" + numericUpDown1.Text + "','" + comboBox4.SelectedValue + "','" + dateTimePicker1.Value.ToString("yyyy-MM-dd") + "' ,'" + dateTimePicker2.Value.ToString("yyyy-MM-dd") + "');");
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.korzina_zapravkiTableAdapter.Zakaz_zapravki(this.remontDataSet.Korzina_zapravki);
+            }
+            if (co == 2)
+            {
+                MessageBox.Show("Заказ уже существует!");
+            }  
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите убрать заказ?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                command.CommandText = "DELETE FROM `Korzina_zapravki` WHERE id_korzina_zapravki=" + dataGridView1[0, dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.korzina_zapravkiTableAdapter.Zakaz_zapravki(this.remontDataSet.Korzina_zapravki);
+            }
+        }
+
+        private void comboBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void numericUpDown1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox4_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            fmKlients frKlients = new fmKlients();
+            frKlients.menuStrip4.Visible = true;
+            frKlients.Show();
+            this.Hide();
+        }
+
+        private void comboBox1_TextUpdate(object sender, EventArgs e)
+        {
+            string text = comboBox1.Text;
+            klientsBindingSource.Filter = "FIO LIKE '*" + text + "*'";
+            comboBox1.Text = text;
+            comboBox1.SelectionStart = text.Length;
+        }
+    }
+}
+public partial class fmOkazanie_uslug : Form
+    {
+        public fmOkazanie_uslug()
+        {
+            InitializeComponent();
+        }
+
+        private void fmOkazanie_uslug_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Uslugi". При необходимости она может быть перемещена или удалена.
+            this.uslugiTableAdapter.Uslugi(this.remontDataSet.Uslugi);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            fmZakaz_uslug frZakaz_uslug = new fmZakaz_uslug();
+            frZakaz_uslug.Show();
+            this.Close();
+        }
+
+        private void главноеМенюToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmMeneger frMeneger = new fmMeneger();
+            frMeneger.Show();
+            int co;
+            co = 0;
+            for (int i = 0; i < frMeneger.dataGridView1.RowCount; i++)
+            {
+                for (int j = 0; j < frMeneger.dataGridView1.ColumnCount; j++)
+                    if (frMeneger.dataGridView1.Rows[i].Cells[14].Value != null)
+                        if (frMeneger.dataGridView1.Rows[i].Cells[14].Value.ToString().Contains(frMeneger.textBox1.Text))
+                        {
+                            co = 1;
+                        }
+                        else
+                        {
+                            frMeneger.dataGridView1.CurrentCell = null;
+                            break;
+                        }
+                if (co == 1)
+                {
+                    frMeneger.menuStrip2.Visible = true;
+                    frMeneger.Controls["MenuStrip2"].BackColor = Color.FromName("Red");
+                }
+                if (co == 0)
+                {
+                    frMeneger.menuStrip1.Visible = true;
+                    frMeneger.Controls["MenuStrip1"].BackColor = Color.FromName("Control");
+                }
+                    this.Close();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            button6.Visible = true;
+            this.uslugiTableAdapter.Uslugi(this.remontDataSet.Uslugi);
+            int co;
+            co = 0;
+            if ((textBox1.Text.Equals("")))
+            {
+                MessageBox.Show("Не заполнено поле");
+                co = 2;
+            }
+            else
+            {
+                for (int i = 0; i < dataGridView1.RowCount; i++)
+                {
+                    for (int j = 0; j < dataGridView1.ColumnCount; j++)
+                        if (dataGridView1.Rows[i].Cells[3].Value != null)
+                            if (dataGridView1.Rows[i].Cells[2].Value.ToString().Contains(textBox1.Text) || (dataGridView1.Rows[i].Cells[3].Value.ToString().Contains(textBox1.Text)))
+                            { co = 1; }
+                            else
+                            {
+                                dataGridView1.CurrentCell = null;
+                                dataGridView1.Rows[i].Visible = false;
+                                break;
+                            }
+                }
+                if (co == 0)
+                {
+                    MessageBox.Show("Совпадений не найдено!");
+                }
+                if (co == 1)
+                {
+                    MessageBox.Show("Поиск завершен!");
+                }
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            button6.Visible = false;
+            textBox1.Clear();
+            this.uslugiTableAdapter.Uslugi(this.remontDataSet.Uslugi);
+        }
+    }
+}
+public partial class fmZakaz_uslug : Form
+    {
+        string TempluteFileName = @"C:\Users\Дмитрий\Desktop\Диплом\Remont\usluga.dotx";
+        public fmZakaz_uslug()
+        {
+            InitializeComponent();
+        }
+
+        private void услугиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmOkazanie_uslug frOkazanie_uslug = new fmOkazanie_uslug();
+            frOkazanie_uslug.Show();
+            this.Close();
+        }
+
+        private void fmKorzina_uslug_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina_uslugi". При необходимости она может быть перемещена или удалена.
+            this.korzina_uslugiTableAdapter.Zakaz_uslug(this.remontDataSet.Korzina_uslugi);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Sotrudniki". При необходимости она может быть перемещена или удалена.
+            this.sotrudnikiTableAdapter.Fill(this.remontDataSet.Sotrudniki);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Uslugi". При необходимости она может быть перемещена или удалена.
+            this.uslugiTableAdapter.Uslugi(this.remontDataSet.Uslugi);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Klients". При необходимости она может быть перемещена или удалена.
+            this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Sotrudniki". При необходимости она может быть перемещена или удалена.
+            this.sotrudnikiTableAdapter.Fill(this.remontDataSet.Sotrudniki);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Uslugi". При необходимости она может быть перемещена или удалена.
+            this.uslugiTableAdapter.Uslugi(this.remontDataSet.Uslugi);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Klients". При необходимости она может быть перемещена или удалена.
+            this.klientsTableAdapter.Klients(this.remontDataSet.Klients);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            int co;
+            co = 0;
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                if ((Convert.ToString(dataGridView1.Rows[i].Cells[10].Value) == comboBox1.Text) && (Convert.ToString(dataGridView1.Rows[i].Cells[11].Value) == comboBox2.Text))
+                {
+                    co = 2;
+                }
+            }
+            if (co == 0)
+            {
+            MessageBox.Show("Заказ успешно добавлен!");
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            command.CommandText = "INSERT INTO `Korzina_uslugi` (Id_klients,Id_uslugi,Id_sotrudnik,Date,Date_sdachi) VALUES ('" + (comboBox1.SelectedValue + "','" + comboBox2.SelectedValue + "','" + comboBox3.SelectedValue + "','" + dateTimePicker1.Value.ToString("yyyy-MM-dd") + "','" + dateTimePicker2.Value.ToString("yyyy-MM-dd") + "');");
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+            this.korzina_uslugiTableAdapter.Zakaz_uslug(this.remontDataSet.Korzina_uslugi);
+            }
+            if (co == 2)
+            {
+                MessageBox.Show("Заказ уже существует!");
+            }  
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            String connString = "Server=127.0.0.1;Port=3306;Database=Remont;Uid=root;";
+            MySqlConnection conn = new MySqlConnection(connString);
+            MySqlCommand command = conn.CreateCommand();
+            DialogResult result = MessageBox.Show("Вы дествительно хотите убрать заказ?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                command.CommandText = "DELETE FROM `Korzina_uslugi` WHERE id_korzina_uslugi=" + dataGridView1[0, dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+                this.korzina_uslugiTableAdapter.Zakaz_uslug(this.remontDataSet.Korzina_uslugi);
+            }
+        }
+
+        private void comboBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void comboBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+            char l = e.KeyChar;
+            if ((l < 'А' || l > 'я') && (l < 'A' || l > 'z') && (l != ' ') && (l != '.') && (l != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            fmKlients frKlients = new fmKlients();
+            frKlients.Show();
+            frKlients.menuStrip3.Visible = true;
+            this.Hide();
+
+        }
+
+        private void comboBox1_TextUpdate(object sender, EventArgs e)
+        {
+            string text = comboBox1.Text;
+            klientsBindingSource.Filter = "FIO LIKE '*" + text + "*'";
+            comboBox1.Text = text;
+            comboBox1.SelectionStart = text.Length;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            
+            this.korzina_uslugiTableAdapter.Zakaz_uslug(this.remontDataSet.Korzina_uslugi);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var Id_zakaza = textBox7.Text;
+            var name = textBox6.Text;
+            var adress = textBox8.Text;
+            var phone = textBox9.Text;
+            var usluga = textBox10.Text;
+            var signdate = dateTimePicker1.Value.ToShortDateString();
+           
+            //TODO: Word Export
+
+             var wordApp = new Word.Application();
+             wordApp.Visible = false;
+
+
+            try
+            {
+                var wordDocument = wordApp.Documents.Open(TempluteFileName);
+                ReplaceWordStub("{Id_zakaza}", Id_zakaza, wordDocument);
+                ReplaceWordStub("{name}", name, wordDocument);
+                ReplaceWordStub("{adress}", adress, wordDocument);
+                ReplaceWordStub("{phone}", phone, wordDocument);
+                ReplaceWordStub("{usluga}", usluga, wordDocument);
+                ReplaceWordStub("{signdate}", signdate, wordDocument);
+
+                wordDocument.SaveAs(@"C:\Users\Дмитрий\Desktop\Диплом\Remont\result.dotx");
+                wordApp.Visible = true;
+           }
+             catch
+            {
+                 MessageBox.Show("Не удалось загрузить шаблон!");
+            } 
+        }
+
+        private void ReplaceWordStub(string stubToReplace, string text, Word.Document wordDocument)
+        {
+            var range = wordDocument.Content;
+            range.Find.ClearFormatting();
+            range.Find.Execute(FindText: stubToReplace, ReplaceWith: text);
+        }
+    }
+}
+public partial class fmNapominalka : Form
+    {
+        public fmNapominalka()
+        {
+            InitializeComponent();
+        }
+
+        private void fmNapominalk_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina_zapravki". При необходимости она может быть перемещена или удалена.
+            this.korzina_zapravkiTableAdapter.Zakaz_zapravki(this.remontDataSet.Korzina_zapravki);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina_uslugi". При необходимости она может быть перемещена или удалена.
+            this.korzina_uslugiTableAdapter.Zakaz_uslug(this.remontDataSet.Korzina_uslugi);
+        }
+
+        private void textBox1_VisibleChanged(object sender, EventArgs e)
+        {
+            textBox1.Text = DateTime.Now.ToShortDateString();
+        }
+
+        private void djdhhdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmMeneger frMeneger = new fmMeneger();
+            frMeneger.Show();
+            this.Close();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            fmNapominalka_uslugi frNapominalka_uslugi = new fmNapominalka_uslugi();
+            frNapominalka_uslugi.Show();
+            frNapominalka_uslugi.textBox1.Visible = true;
+           
+            for (int i = 0; i < frNapominalka_uslugi.dataGridView1.RowCount; i++)
+            {
+                for (int j = 0; j < frNapominalka_uslugi.dataGridView1.ColumnCount; j++)
+                    if (frNapominalka_uslugi.dataGridView1.Rows[i].Cells[14].Value != null)
+                        if (frNapominalka_uslugi.dataGridView1.Rows[i].Cells[14].Value.ToString().Contains(frNapominalka_uslugi.textBox1.Text))
+                        {
+                            
+                            frNapominalka_uslugi.dataGridView1.Rows[i].Cells[14].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_uslugi.dataGridView1.Rows[i].Cells[13].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_uslugi.dataGridView1.Rows[i].Cells[12].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_uslugi.dataGridView1.Rows[i].Cells[11].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_uslugi.dataGridView1.Rows[i].Cells[10].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_uslugi.dataGridView1.Rows[i].Cells[9].Style.BackColor = Color.FromName("Red");
+                        }
+                        else
+                        {
+                            frNapominalka_uslugi.dataGridView1.CurrentCell = null;
+                            break;
+                        }
+            
+                this.Hide();
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            fmNapominalka_kartridg frNapominalka_kartridg = new fmNapominalka_kartridg();
+            frNapominalka_kartridg.Show();
+            for (int i = 0; i < frNapominalka_kartridg.dataGridView1.RowCount; i++)
+            {
+                for (int j = 0; j < frNapominalka_kartridg.dataGridView1.ColumnCount; j++)
+                    if (frNapominalka_kartridg.dataGridView1.Rows[i].Cells[16].Value != null)
+                        if (frNapominalka_kartridg.dataGridView1.Rows[i].Cells[16].Value.ToString().Contains(frNapominalka_kartridg.textBox1.Text))
+                        {
+                            frNapominalka_kartridg.dataGridView1.Rows[i].Cells[16].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_kartridg.dataGridView1.Rows[i].Cells[15].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_kartridg.dataGridView1.Rows[i].Cells[14].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_kartridg.dataGridView1.Rows[i].Cells[13].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_kartridg.dataGridView1.Rows[i].Cells[12].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_kartridg.dataGridView1.Rows[i].Cells[11].Style.BackColor = Color.FromName("Red");
+                            frNapominalka_kartridg.dataGridView1.Rows[i].Cells[10].Style.BackColor = Color.FromName("Red");
+                        }
+                        else
+                        {
+                            frNapominalka_kartridg.dataGridView1.CurrentCell = null;
+                            break;
+                        }
+                this.Hide();
+            }
+        }
+    }
+}
+public partial class fmNapominalka_kartridg : Form
+    {
+        public fmNapominalka_kartridg()
+        {
+            InitializeComponent();
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmNapominalka frNapominalka = new fmNapominalka();
+            frNapominalka.Show();
+            this.Close();
+        }
+
+        private void fmNapominalka_kartridg_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina_zapravki". При необходимости она может быть перемещена или удалена.
+            this.korzina_zapravkiTableAdapter.Zakaz_zapravki(this.remontDataSet.Korzina_zapravki);
+        }
+
+        private void textBox1_VisibleChanged(object sender, EventArgs e)
+        {
+            textBox1.Text = DateTime.Now.ToShortDateString();
+        }
+    }
+}
+public partial class fmNapominalka_uslugi : Form
+    {
+        public fmNapominalka_uslugi()
+        {
+            InitializeComponent();
+        }
+
+        private void fmNapominalka_uslugi_Load(object sender, EventArgs e)
+        {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina_uslugi". При необходимости она может быть перемещена или удалена.
+            this.korzina_uslugiTableAdapter.Zakaz_uslug(this.remontDataSet.Korzina_uslugi);
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "remontDataSet.Korzina_uslugi". При необходимости она может быть перемещена или удалена.
+            this.korzina_uslugiTableAdapter.Zakaz_uslug(this.remontDataSet.Korzina_uslugi);
+        }
+
+        private void назадToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fmNapominalka frNapominalka = new fmNapominalka();
+            frNapominalka.Show();
+            this.Close();
+        }
+
+        private void textBox1_VisibleChanged(object sender, EventArgs e)
+        {
+            textBox1.Text = DateTime.Now.ToShortDateString();
+        }
+    }
+}
+
